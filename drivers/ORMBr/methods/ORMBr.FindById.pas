@@ -57,7 +57,7 @@ begin
 
   if (not FIdStr.IsEmpty) then
   begin
-    value := FManager.FindWhere(Format('ID = %s', [FIdStr])).First;
+    value := FManager.FindWhere(Format('ID = %s', [QuotedStr(FIdStr)])).First;
   end else begin
     value := FManager.FindWhere(Format('ID = %d', [FIdInt])).First;
   end;

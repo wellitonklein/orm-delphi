@@ -12,13 +12,13 @@ type
   private
     FParent: IORMDriver<T>;
     FManager: IContainerObjectSet<T>;
-    FOldData: T;
+    FOldDataId: string;
     FNewData: T;
   public
     constructor Create(const Parent: IORMDriver<T>; const manager: IContainerObjectSet<T>);
     destructor Destroy; override;
     class function New(const Parent: IORMDriver<T>; const manager: IContainerObjectSet<T>): IORMMethodUpdateDriver<T>;
-    function oldData(const value: T): IORMMethodUpdateDriver<T>;
+    function oldDataId(const value: string): IORMMethodUpdateDriver<T>;
     function setData(const value: T): IORMMethodUpdateDriver<T>;
     function &EndUpdate: IORMMethodDriver<T>;
   end;
@@ -41,9 +41,20 @@ begin
 end;
 
 function TORMMethodUpdateDriver<T>.EndUpdate: IORMMethodDriver<T>;
+var
+  LOldData: T;
 begin
   Result := FParent.method;
-  FManager.Modify(FOldData);
+
+  FParent
+    .method
+      .findById
+        .setId(FOldDataId)
+        .getData(LOldData)
+      .EndFindById
+    .EndMethod;
+
+  FManager.Modify(LOldData);
   FManager.Update(FNewData);
 end;
 
@@ -53,11 +64,10 @@ begin
   Result := Self.Create(Parent, manager);
 end;
 
-function TORMMethodUpdateDriver<T>.oldData(const value: T)
-  : IORMMethodUpdateDriver<T>;
+function TORMMethodUpdateDriver<T>.oldDataId(const value: string): IORMMethodUpdateDriver<T>;
 begin
   Result := Self;
-  FOldData := value;
+  FOldDataId := value;
 end;
 
 function TORMMethodUpdateDriver<T>.setData(

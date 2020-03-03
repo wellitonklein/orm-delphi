@@ -39,7 +39,7 @@ type
 
   IORMMethodUpdateDriver<T: class, constructor> = interface
     ['{935DEF33-D0BB-4815-9301-9ACE44EFE367}']
-    function oldData(const value: T): IORMMethodUpdateDriver<T>;
+    function oldDataId(const value: string): IORMMethodUpdateDriver<T>;
     function setData(const value: T): IORMMethodUpdateDriver<T>;
     function &EndUpdate: IORMMethodDriver<T>;
   end;
